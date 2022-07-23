@@ -10,35 +10,22 @@ const UsersListPage = () => {
   }, []);
 
   const fetchData = () => {
-    const usersList = [
-      {
-        _id: 1,
-        firstName: "John",
-        lastName: "Doe",
-        email: "john@example.com",
-      },
-      {
-        _id: 2,
-        firstName: "Koffi",
-        lastName: "Yao",
-        email: "koffiy@example.com",
-      },
-      {
-        _id: 3,
-        firstName: "Soro",
-        lastName: "Aymard",
-        email: "soroa@example.com",
-      },
-    ];
+    const _users = JSON.parse(localStorage.getItem("users"));
+    setUsers(_users);
+  };
 
-    setUsers(usersList);
+  const handleDelete = (id) => {
+    const _users = users.filter((user) => user._id !== id);
+    console.log(_users);
+    localStorage.setItem("users", JSON.stringify(_users));
+    setUsers(_users);
   };
 
   return (
     <div>
       <div>
         <h1>Liste des utilisateurs</h1>
-        <Link to={`/users/edit/0`}>Créer un utilisateur</Link>
+        <Link to={`/users/add`}>Créer un utilisateur</Link>
       </div>
       {users && users.length > 0 ? (
         <>
@@ -65,6 +52,9 @@ const UsersListPage = () => {
                 </th>
                 <th>
                   <Link to={`/users/edit/${user._id}`}>Modifier</Link>
+                  <button onClick={(e) => handleDelete(user._id)}>
+                    Supprimer
+                  </button>
                 </th>
               </tr>
             ))}

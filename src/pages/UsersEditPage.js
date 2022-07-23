@@ -1,140 +1,124 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Formik, Form, useField } from "formik";
-import * as Yup from "yup";
+import { Link, useParams } from "react-router-dom";
 import "../styles/edit.css";
-const MyTextInput = ({ label, ...props }) => {
-  // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
-  // which we can spread on <input>. We can use field meta to show an error
-  // message if the field is invalid and it has been touched (i.e. visited)
-  const [field, meta] = useField(props);
-  return (
-    <div>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <input className="text-input" {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
-    </div>
-  );
-};
-
-const MyCheckbox = ({ children, ...props }) => {
-  // React treats radios and checkbox inputs differently other input types, select, and textarea.
-  // Formik does this too! When you specify `type` to useField(), it will
-  // return the correct bag of props for you -- a `checked` prop will be included
-  // in `field` alongside `name`, `value`, `onChange`, and `onBlur`
-  const [field, meta] = useField({ ...props, type: "checkbox" });
-  return (
-    <div>
-      <label className="checkbox-input">
-        <input type="checkbox" {...field} {...props} />
-        {children}
-      </label>
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
-    </div>
-  );
-};
-
-const MySelect = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
-  return (
-    <div>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <select {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
-    </div>
-  );
-};
 
 // And now we can use these
 const UsersEditPage = () => {
+  // recuperer le ID.
+  const userId = useParams().id;
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (userId) {
+      // recuperation d'un utilisateur
+      const users = JSON.parse(localStorage.getItem("users"));
+      const _user = users.filter((user) => user._id == userId)[0];
+
+      setFirstName(_user.firstName);
+      setLastName(_user.lastName);
+      setEmail(_user.email);
+    }
+  }, [userId]);
+
+  // Envoi des données
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // verification des valeurs des passwords
+    const users = JSON.parse(localStorage.getItem("users"));
+    if (password === confirmPassword) {
+      if (userId) {
+        // Mise a d'un utilisateur
+        const _users = users.filter((user) => user._id !== parseInt(userId));
+        console.log(_users);
+        _users.push({
+          _id: userId,
+          firstName,
+          lastName,
+          email,
+          password,
+        });
+        localStorage.setItem("users", JSON.stringify(_users));
+        setMessage("Mise à effectuée");
+      } else {
+        // enregistrement du nouvel utilisateur.
+        // ajout d'un utilisateur
+        users.push({
+          _id: users.length + 1,
+          firstName,
+          lastName,
+          email,
+          password,
+        });
+        localStorage.setItem("users", JSON.stringify(users));
+        setMessage("Enregistrement effectué");
+      }
+    } else {
+      setMessage("Les mots de passe ne sont pas identiques");
+    }
+  };
+
   return (
     <div className="form__Container">
       <h1>Subscribe!</h1>
-      <Formik
-        initialValues={{
-          firstName: "",
-          lastName: "",
-          email: "",
-          acceptedTerms: false, // added for our checkbox
-          jobType: "", // added for our select
-        }}
-        validationSchema={Yup.object({
-          firstName: Yup.string()
-            .max(15, "Must be 15 characters or less")
-            .required("Required"),
-          lastName: Yup.string()
-            .max(20, "Must be 20 characters or less")
-            .required("Required"),
-          email: Yup.string()
-            .email("Invalid email address")
-            .required("Required"),
-          acceptedTerms: Yup.boolean()
-            .required("Required")
-            .oneOf([true], "You must accept the terms and conditions."),
-          jobType: Yup.string()
-            .oneOf(
-              ["designer", "development", "product", "other"],
-              "Invalid Job Type"
-            )
-            .required("Required"),
-        })}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
-        }}
-      >
-        <Form>
-          <MyTextInput
-            label="Nom"
-            name="firstName"
+      <p>{message}</p>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label for="firstName">Nom</label>
+          <input
             type="text"
-            placeholder="Jane"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
           />
-
-          <MyTextInput
-            label="Prénoms"
-            name="lastName"
+        </div>
+        <div>
+          <label for="firstName">Prenoms</label>
+          <input
             type="text"
-            placeholder="Doe"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
           />
-
-          <MyTextInput
-            label="Email Adresse"
-            name="email"
+        </div>
+        <div>
+          <label for="firstName">Adresse email</label>
+          <input
             type="email"
-            placeholder="jane@formik.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
-
-          <MyTextInput
-            label="Mot de passe"
-            name="password"
+        </div>
+        <div>
+          <label for="firstName">Password</label>
+          <input
             type="password"
-            placeholder="jane@formik.com"
+            value={password}
+            onChange={(e) => setPassword(e.target.targetvalue)}
+            required
           />
-
-          {/* <MySelect label="Job Type" name="jobType">
-            <option value="">Select a job type</option>
-            <option value="designer">Designer</option>
-            <option value="development">Developer</option>
-            <option value="product">Product Manager</option>
-            <option value="other">Other</option>
-          </MySelect> */}
-
-          {/* <MyCheckbox name="acceptedTerms">
-            I accept the terms and conditions
-          </MyCheckbox> */}
-
-          <button type="submit">Submit</button>
-        </Form>
-      </Formik>
+        </div>
+        <div>
+          <label for="firstName">Confirme password</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.targetvalue)}
+            required
+          />
+        </div>
+        <div>
+          <Link to="/users">Annuler</Link>
+          <button type="submit">Enregistrer</button>
+        </div>
+      </form>
     </div>
   );
 };

@@ -1,8 +1,7 @@
 import React from "react";
 
-const CardView = () => {
-  const test = 29;
-  return <div>CardView{29}</div>;
+const CardView = ({ number }) => {
+  return <div>CardView {number}</div>;
 };
 
 export default CardView;
