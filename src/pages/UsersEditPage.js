@@ -65,58 +65,75 @@ const UsersEditPage = () => {
   };
 
   return (
-    <div className="form__Container">
-      <h1>Subscribe!</h1>
-      <p>{message}</p>
+    <div className="w-4/5 mx-auto">
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="my-10">
+          <h1 className="text-4xl">Subscribe!</h1>
+          <p>{message}</p>
+        </div>
+        <div className="my-4">
           <label for="firstName">Nom</label>
           <input
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
+            className="border border-gray rounded-lg px-4 py-2 w-full"
           />
         </div>
-        <div>
+        <div className="my-4">
           <label for="firstName">Prenoms</label>
           <input
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             required
+            className="border border-gray rounded-lg px-4 py-2 w-full"
           />
         </div>
-        <div>
+        <div className="my-4">
           <label for="firstName">Adresse email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="border border-gray rounded-lg px-4 py-2 w-full"
           />
         </div>
-        <div>
+        <div className="my-4">
           <label for="firstName">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.targetvalue)}
             required
+            className="border border-gray rounded-lg px-4 py-2 w-full"
           />
         </div>
-        <div>
+        <div className="my-4">
           <label for="firstName">Confirme password</label>
           <input
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.targetvalue)}
             required
+            className="border border-gray rounded-lg px-4 py-2 w-full"
           />
         </div>
-        <div>
-          <Link to="/users">Annuler</Link>
-          <button type="submit">Enregistrer</button>
+        <div className="flex items-center justify-end my-4 space-x-4">
+          <button
+            className="text-center  bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800"
+            type="submit"
+          >
+            Enregistrer
+          </button>
+          <Link
+            className="bg-gray-400 text-center px-4 py-2 rounded-lg hover:bg-gray-500"
+            to="/users"
+          >
+            Annuler
+          </Link>
         </div>
       </form>
     </div>

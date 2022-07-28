@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "../styles/list.css";
+import { AiOutlineUser } from "react-icons/ai";
 
 const UsersListPage = () => {
   const [users, setUsers] = useState([]);
@@ -22,10 +22,15 @@ const UsersListPage = () => {
   };
 
   return (
-    <div>
-      <div>
-        <h1>Liste des utilisateurs</h1>
-        <Link to={`/users/add`}>Créer un utilisateur</Link>
+    <div className="min-h-screen">
+      <div className="flex items-center justify-between px-4 py-2 border border-b-gray-200">
+        <h1 className="text-3xl font-semibold">Liste des utilisateurs</h1>
+        <Link
+          className="bg-green-700 hover:bg-green-800 transition ease-in focus:outline-none px-4 py-2 rounded-full shadow-sm text-white"
+          to={`/users/add`}
+        >
+          Créer un utilisateur
+        </Link>
       </div>
       {users && users.length > 0 ? (
         <>
@@ -61,7 +66,10 @@ const UsersListPage = () => {
           </table>
         </>
       ) : (
-        <>Aucuns utilisateus</>
+        <div className="text-gray-600 text-center mx-auto mt-[100px] w-[300px] h-[400px] flex flex-col items-center">
+          <AiOutlineUser className="w-16 h-16" />
+          <p className="text-lg">Aucuns utilisateurs</p>
+        </div>
       )}
     </div>
   );

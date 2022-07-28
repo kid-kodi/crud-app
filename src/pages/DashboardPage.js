@@ -1,5 +1,4 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import CardView from "../components/CardView";
 
 const DashboardPage = () => {
@@ -7,7 +6,7 @@ const DashboardPage = () => {
 
   return (
     <div>
-      <CardView number={number.length} />
+      <CardView number={number?.length} />
     </div>
   );
 };
