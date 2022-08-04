@@ -8,6 +8,6 @@ const StudentSchema = new mongoose.Schema(
   { timestamp: true }
 );
 
-const Student = mongoose.model("student", StudentSchema);
+const Student = mongoose.model("Student", StudentSchema);
 
 module.exports = Student;

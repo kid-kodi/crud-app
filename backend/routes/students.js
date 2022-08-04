@@ -17,7 +17,21 @@ router.post("/create", async (req, res) => {
     const user = req.body;
     const student = new Student(user);
     await student.save();
-    res.send("Student " + user.firstName + " " + user.lastName + " created");
+    res
+      .status(201)
+      .send("Student " + user.firstName + " " + user.lastName + " created");
+  } catch (error) {
+    console.log(error);
+    res.status(501).send(error);
+  }
+});
+
+// PUT method route
+router.get("/read/:studentId", async (req, res) => {
+  try {
+    const studentId = req.params.studentId;
+    const student = await Student.findById(studentId);
+    res.status(201).send(student);
   } catch (error) {
     console.log(error);
     res.status(501).send(error);

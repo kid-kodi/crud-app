@@ -1,11 +1,13 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "../styles/edit.css";
 
 // And now we can use these
 const UsersEditPage = () => {
   // recuperer le ID.
+  let navigate = useNavigate();
   const userId = useParams().id;
 
   const [firstName, setFirstName] = useState("");
@@ -18,12 +20,7 @@ const UsersEditPage = () => {
   useEffect(() => {
     if (userId) {
       // recuperation d'un utilisateur
-      const users = JSON.parse(localStorage.getItem("users"));
-      const _user = users.filter((user) => user._id == userId)[0];
-
-      setFirstName(_user.firstName);
-      setLastName(_user.lastName);
-      setEmail(_user.email);
+      getUser(userId);
     }
   }, [userId]);
 
@@ -31,36 +28,53 @@ const UsersEditPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // verification des valeurs des passwords
-    const users = JSON.parse(localStorage.getItem("users"));
     if (password === confirmPassword) {
       if (userId) {
         // Mise a d'un utilisateur
-        const _users = users.filter((user) => user._id !== parseInt(userId));
-        console.log(_users);
-        _users.push({
-          _id: userId,
-          firstName,
-          lastName,
-          email,
-          password,
-        });
-        localStorage.setItem("users", JSON.stringify(_users));
-        setMessage("Mise à effectuée");
+        updateUser(userId);
       } else {
-        // enregistrement du nouvel utilisateur.
-        // ajout d'un utilisateur
-        users.push({
-          _id: users.length + 1,
-          firstName,
-          lastName,
-          email,
-          password,
-        });
-        localStorage.setItem("users", JSON.stringify(users));
-        setMessage("Enregistrement effectué");
+        createUser();
       }
     } else {
       setMessage("Les mots de passe ne sont pas identiques");
+    }
+  };
+
+  const getUser = async (userId) => {
+    const response = await axios.get(
+      "http://localhost:5000/api/v1/students/read/" + userId
+    );
+    setFirstName(response.data.firstName);
+    setLastName(response.data.lastName);
+  };
+
+  const createUser = async () => {
+    const response = await axios.post(
+      "http://localhost:5000/api/v1/students/create/",
+      { firstName, lastName }
+    );
+    if (response) {
+      setMessage("Enregistrement effectué");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    }
+  };
+
+  const updateUser = async (userId) => {
+    const response = await axios.put(
+      "http://localhost:5000/api/v1/students/update/" + userId,
+      { firstName, lastName }
+    );
+    if (response) {
+      setMessage("Mise à effectuée");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     }
   };
 
